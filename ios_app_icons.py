@@ -7,6 +7,7 @@ import json
 iconFileName = 'icon.png'
 iconSizeAndScale_iPhone = [(20, 2), (20, 3), (29, 1), (29, 2), (29, 3), (40, 2), (40, 3), (57, 1), (57, 2), (60, 2), (60, 3)]
 iconSizeAndScale_iPad = [(20, 1), (20, 2), (29, 1), (29, 2), (40, 1), (40, 2), (50, 1), (50, 2), (72, 1), (72, 2), (76, 1), (76, 2), (83.5, 2)]
+iconSizeAndScale_Mac = [(16, 1), (16, 2), (32, 1), (32, 2), (128, 1), (128, 2), (256, 1), (256, 2), (512, 1), (512, 2)]
 
 
 AssetsDirName = 'Assets.xcassets'
@@ -33,6 +34,13 @@ def outputXcodeContents():
         item['scale'] = '%dx' % scale
         item['filename'] = 'icon_%d.png' % (size * scale)
         images.append(item)
+    for size, scale in iconSizeAndScale_Mac:
+        item = {}
+        item['idiom'] = 'mac'
+        item['size'] = ('%dx%d' if isinstance(size, int) else '%.1fx%.1f') % (size, size)
+        item['scale'] = '%dx' % scale
+        item['filename'] = 'icon_%d.png' % (size * scale)
+        images.append(item)
 
     contents = {}
     contents['images'] = images
@@ -42,7 +50,7 @@ def outputXcodeContents():
     json.dump(contents, open(fileName, 'wb'), indent=True)
 
 def outputImages():
-    allSizes = [size*scale for size, scale in iconSizeAndScale_iPhone + iconSizeAndScale_iPad]
+    allSizes = [size*scale for size, scale in iconSizeAndScale_iPhone + iconSizeAndScale_iPad + iconSizeAndScale_Mac]
     iconSizes = list(set(allSizes))
     iconSizes.sort()
     for iconSize in iconSizes:
@@ -63,6 +71,6 @@ if __name__ == '__main__':
     os.mkdir(FinalDirName)
 
     outputImages()
-    outputXcodeContents()
+    # outputXcodeContents()
 
 
